@@ -7,15 +7,23 @@ const OpenAI = require('openai');
 require('dotenv').config();
 
 const app = express();
-const server = http.createServer(app);
+const server = http.createServer(app); // <-- Add this line back
+
+// The URL of your live frontend
+const allowedOrigin = "https://larkgptfront.onrender.com";
+
+// Configure CORS for Express
+app.use(cors({
+  origin: allowedOrigin
+}));
+
+// Configure CORS for Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: allowedOrigin,
     methods: ["GET", "POST"]
   }
 });
-
-app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/messaging-app');
